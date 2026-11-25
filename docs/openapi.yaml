@@ -1,0 +1,190 @@
+﻿openapi: 3.0.3
+
+info:
+  title: Gestão de Pets API
+  description: |
+    API REST para cadastro e consulta de pets.
+    Utiliza Node.js, Express, MongoDB, Mongoose e autenticação JWT.
+  version: 1.0.0
+
+servers:
+  - url: /api
+    description: API local
+
+tags:
+  - name: Autenticação
+    description: Login do administrador e geração de token JWT.
+
+  - name: Pets
+    description: Cadastro e consulta de pets.
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Autenticação
+      summary: Autentica o administrador
+      description: Realiza o login e retorna um token JWT.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginInput'
+      responses:
+        '200':
+          description: Login realizado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+        '400':
+          description: Campos obrigatórios não informados.
+
+        '401':
+          description: E-mail ou senha inválidos.
+
+  /pets:
+    get:
+      tags:
+        - Pets
+      summary: Lista os pets cadastrados
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de pets cadastrados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Pet'
+
+        '401':
+          description: Token não informado ou inválido.
+
+    post:
+      tags:
+        - Pets
+      summary: Cadastra um novo pet
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PetInput'
+      responses:
+        '201':
+          description: Pet cadastrado com sucesso.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pet'
+
+        '400':
+          description: Dados inválidos ou campos obrigatórios ausentes.
+
+        '401':
+          description: Token não informado ou inválido.
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    LoginInput:
+      type: object
+      required:
+        - email
+        - senha
+      properties:
+        email:
+          type: string
+          format: email
+          example: admin@example.test
+        senha:
+          type: string
+          format: password
+          example: senha-ficticia-nao-utilizar
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token JWT para autenticação.
+        usuario:
+          type: object
+          properties:
+            id:
+              type: string
+              example: admin-principal
+            nome:
+              type: string
+              example: Administrador do Sistema
+            email:
+              type: string
+              example: admin@example.test
+            role:
+              type: string
+              example: admin
+
+    PetInput:
+      type: object
+      required:
+        - nome
+        - especie
+      properties:
+        nome:
+          type: string
+          example: Pipoca
+        especie:
+          type: string
+          example: cachorro
+        raca:
+          type: string
+          nullable: true
+          example: SRD
+        idade:
+          type: integer
+          minimum: 0
+          nullable: true
+          example: 3
+
+    Pet:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        nome:
+          type: string
+          example: Pipoca
+        especie:
+          type: string
+          example: cachorro
+        raca:
+          type: string
+          nullable: true
+          example: SRD
+        idade:
+          type: integer
+          nullable: true
+          example: 3
+        criadoPor:
+          type: string
+          example: admin-principal
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
