@@ -2,7 +2,7 @@
 
 # Testes de carga da API de pets com JMeter
 
-O arquivo `pets-load-test.jmx` contém dois cenários independentes. Ambos executam o mesmo fluxo autenticado: fazem login em `POST /api/auth/login`, extraem `$.token` da resposta, enviam `Authorization: Bearer <token>`, cadastram um pet em `POST /api/pets` e consultam a coleção em `GET /api/pets`.
+O arquivo `pets-load-test.jmx` contém dois cenários independentes. Ambos executam o mesmo fluxo autenticado: fazem login em `POST /api/auth/login`, extraem `$.token` da resposta, enviam `Authorization: Bearer <token>`, cadastram um pet em `POST /pets` e consultam a coleção em `GET /pets`.
 
 ## Pré-requisitos
 

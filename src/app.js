@@ -9,6 +9,7 @@ import yaml from 'js-yaml';
 import swaggerUi from 'swagger-ui-express';
 
 import routes from './routes/index.js';
+import petsRoutes from './routes/pets.routes.js';
 import notFound from './middlewares/notFound.js';
 import errorHandler from './middlewares/errorHandler.js';
 import './database/seed.js';
@@ -39,6 +40,10 @@ app.get('/', (req, res) => {
   });
 });
 
+// Endpoints /pets exigidos pelo projeto JMeter.
+app.use('/pets', petsRoutes);
+
+// Mantém os endpoints existentes com o prefixo /api.
 app.use('/api', routes);
 
 app.use(notFound);
